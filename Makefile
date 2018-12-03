@@ -21,7 +21,8 @@ directory: $(OUTDIR)
 
 build: directory $(SOURCES) $(OUTDIR)$(OUTFILE)
 
-benchmark: nvcc -std=c++11 -I /usr/local/cuda-8.0/include/ -I ./common/ benchmark.cu -o build/nbody_b
+benchmark: 
+	nvcc -std=c++11 -I /usr/local/cuda-8.0/include/ -I ./common/ benchmark.cu -o build/nbody_b
 
 $(OUTDIR):
 	$(MKDIR_P) $(OUTDIR)
