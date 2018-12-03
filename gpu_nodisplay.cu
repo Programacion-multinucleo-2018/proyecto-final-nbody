@@ -65,7 +65,9 @@ int main(int argc, const char **argv) {
 
   int iterations = getCmdLineArgumentInt(argc, argv, "iterations=");
   if (!iterations) {
-    cout << "Please specify an input file with the option --file." << endl;
+    cout << "Please specify the number of iterations with the option "
+            "--iterations."
+         << endl;
     exit(EXIT_FAILURE);
   }
 
@@ -133,7 +135,7 @@ int main(int argc, const char **argv) {
     i++;
   }
 
-  cudaMemcpy(d_v, v, sizeof(Vertex) * n_vertices, cudaMemcpyDeviceToHost);
+  cudaMemcpy(v, d_v, sizeof(Vertex) * n_vertices, cudaMemcpyDeviceToHost);
 
   // unmapping our shared resource. This call is important to make prior to
   // performing rendering tasks because it provides synchronization between the
