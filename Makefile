@@ -23,7 +23,8 @@ directory: $(OUTDIR)
 
 build: directory $(SOURCES) $(OUTDIR)$(OUTFILE)
 
-benchmark: directory $(CC) $(CFLAGS) $(INCLUDES) $(SOURCES_B) -o $(OUTDIR)$(OUTB)
+benchmark: directory 
+	$(CC) $(CFLAGS) $(INCLUDES) $(SOURCES_B) -o $(OUTDIR)$(OUTB)
 
 $(OUTDIR):
 	$(MKDIR_P) $(OUTDIR)
