@@ -143,6 +143,10 @@ void initCUDA(int argc, const char **argv) {
     exit(EXIT_FAILURE);
   }
 
+  cout << "test" << endl;
+
+  cout << *filename << endl;
+
   ifstream input(*filename);
   input >> delta;
   input >> n_vertices;
