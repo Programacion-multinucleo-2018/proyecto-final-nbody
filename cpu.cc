@@ -70,7 +70,7 @@ void display(void) {
 
   glDisable(GL_DEPTH_TEST); // also disable the depth test so renders on top
 
-  glRasterPos2f(-(float)width / 2.0, -(float)height / 2.0);
+  glRasterPos2f(-0.7, -0.9);
   cout << -(float)width / 2.0 << " " << -(float)height / 2.0 << endl;
   glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
   char buf[300];
