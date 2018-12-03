@@ -71,13 +71,12 @@ void display(void) {
   glDisable(GL_DEPTH_TEST); // also disable the depth test so renders on top
 
   glRasterPos2f(-1.0, -1.0);
-  cout << -(float)width / 2.0 << " " << -(float)height / 2.0 << endl;
-  char buf[300];
-  sprintf(buf, "Test");
-  const char *p = buf;
-  do
-    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_10, *p);
-  while (*(++p));
+  string timemark = "Time in seconds: " + iteration * delta +
+                    ", in days: " + iteration * delta / 86400;
+  const char *display_text = timemark.c_str();
+  do {
+    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_10, *display_text);
+  } while (*(++display_text));
 
   glEnable(GL_DEPTH_TEST); // Turn depth testing back on
 
