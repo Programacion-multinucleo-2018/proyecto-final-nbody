@@ -1,6 +1,8 @@
 #include "gpu.cuh"
 #include "main.h"
 
+using namespace std;
+
 ///////////////////////////////////////////////////////////////////////////////
 //! Simple kernel to modify vertex positions in sine wave pattern
 //! @param data  data in global memory
