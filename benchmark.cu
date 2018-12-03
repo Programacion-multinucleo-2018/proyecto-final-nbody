@@ -1,4 +1,5 @@
 #include "main.h"
+#include <chrono>
 
 using namespace std;
 
@@ -188,10 +189,16 @@ int main(int argc, const char **argv) {
 
   auto end_cpu = chrono::high_resolution_clock::now();
 
+  int match = 1;
   for (i = 0; i < n_vertices; i++) {
     if (v[i].position.x - r_v[i].position.x >= 1) {
       cout << "Results DO NOT match" << endl;
+      match = 0;
+      break;
     }
+  }
+
+  if (match) {
     cout << "Results match" << endl;
   }
 

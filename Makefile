@@ -6,7 +6,6 @@ INCLUDES = -I $(CUDA_HOME)/include/ -I ./common/
 LDFLAGS = -lGL -lglut -lGLU -lGLEW
 
 SOURCES = cpu.cc
-SOURCES_B = benchmark.cu
 SOURCES_CU = gpu.cu
 
 OBJECTS=$(SOURCES:.cc=.o)
@@ -14,7 +13,6 @@ OBJECTSCU=$(SOURCES_CU:.cu=.o)
 
 OUTDIR = build/
 OUTFILE = nbody
-OUTB = nbody_b
 MKDIR_P = mkdir -p
 
 all: build
@@ -23,8 +21,7 @@ directory: $(OUTDIR)
 
 build: directory $(SOURCES) $(OUTDIR)$(OUTFILE)
 
-benchmark: directory 
-	$(CC) $(CFLAGS) $(INCLUDES) $(SOURCES_B) -o $(OUTDIR)$(OUTB)
+benchmark: nvcc -std=c++11 -I /usr/local/cuda-8.0/include/ -I ./common/ benchmark.cu -o build/nbody_b
 
 $(OUTDIR):
 	$(MKDIR_P) $(OUTDIR)
