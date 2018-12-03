@@ -73,7 +73,7 @@ void display(void) {
   ostringstream timemark;
   timemark << "Time in seconds: " << (iteration * delta)
            << ", in days: " << (iteration * delta / 86400);
-  const char *display_text = timemark.str().c_str();
+  const char *display_text = "timemark.str().c_str()";
   do {
     glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_10, *display_text);
   } while (*(++display_text));
