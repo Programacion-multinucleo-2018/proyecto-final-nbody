@@ -68,10 +68,9 @@ void display(void) {
   glLoadIdentity();
 
   glDisable(GL_DEPTH_TEST); // also disable the depth test so renders on top
-  glDisable(GL_LIGHTING);
 
   glRasterPos2f(-1.0, -1.0);
-  glColor4f(255.0f, 255.0f, 255.0f, 1.0f);
+  glColor4f(0.0f, 255.0f, 255.0f, 1.0f);
   ostringstream timemark;
   timemark << "Time in seconds: " << ((float)iteration * delta)
            << ", in days: " << ((float)iteration * delta / 86400);
@@ -83,7 +82,6 @@ void display(void) {
     i++;
   };
 
-  glEnable(GL_LIGHTING);
   glEnable(GL_DEPTH_TEST); // Turn depth testing back on
 
   glMatrixMode(GL_PROJECTION);
