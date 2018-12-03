@@ -129,7 +129,6 @@ int main(int argc, const char **argv) {
     v[i].position.x = position_x;
     v[i].position.y = position_y;
     v[i].position.z = position_z;
-    v[i].position.w = 1.0f;
 
     v[i].speed.x = speed_x;
     v[i].speed.y = speed_y;
