@@ -49,10 +49,6 @@ __global__ void calculate_position(Vertex *v, unsigned int n, float delta) {
     v[i].acceleration.x = 0.0f;
     v[i].acceleration.y = 0.0f;
     v[i].acceleration.z = 0.0f;
-
-    printf("Particle #%i\nSpeed: %f %f %f\nPosition: %f %f %f\n", i,
-           v[i].speed.x, v[i].speed.y, v[i].speed.z, v[i].position.x,
-           v[i].position.y, v[i].position.z);
   }
 }
 
@@ -63,6 +59,12 @@ int main(int argc, const char **argv) {
   char **filename = (char **)malloc(sizeof(char *));
 
   if (!getCmdLineArgumentString(argc, argv, "file=", filename)) {
+    cout << "Please specify an input file with the option --file." << endl;
+    exit(EXIT_FAILURE);
+  }
+
+  int iterations = getCmdLineArgumentInt(argc, argv, "iterations=");
+  if (!iterations) {
     cout << "Please specify an input file with the option --file." << endl;
     exit(EXIT_FAILURE);
   }
@@ -119,16 +121,19 @@ int main(int argc, const char **argv) {
   dim3 numBlocks((int)ceil((float)n_vertices / 16.0),
                  (int)ceil((float)n_vertices / 16.0));
   dim3 numThreads(16, 16);
-  calculate_acceleration<<<numBlocks, numThreads>>>(d_v, n_vertices);
-  numBlocks.y = 1;
-  numThreads.y = 1;
-  calculate_position<<<numBlocks, numThreads>>>(d_v, n_vertices, delta);
-  numBlocks.y = (int)ceil((float)n_vertices / 16.0);
-  numThreads.y = 16;
-  calculate_acceleration<<<numBlocks, numThreads>>>(d_v, n_vertices);
-  numBlocks.y = 1;
-  numThreads.y = 1;
-  calculate_position<<<numBlocks, numThreads>>>(d_v, n_vertices, delta);
+
+  int i = 0;
+  while (i < iterations) {
+    calculate_acceleration<<<numBlocks, numThreads>>>(d_v, n_vertices);
+    numBlocks.y = 1;
+    numThreads.y = 1;
+    calculate_position<<<numBlocks, numThreads>>>(d_v, n_vertices, delta);
+    numBlocks.y = (int)ceil((float)n_vertices / 16.0);
+    numThreads.y = 16;
+    i++;
+  }
+
+  cudaMemcpy(d_v, v, sizeof(Vertex) * n_vertices, cudaMemcpyDeviceToHost);
 
   // unmapping our shared resource. This call is important to make prior to
   // performing rendering tasks because it provides synchronization between the
@@ -137,6 +142,16 @@ int main(int argc, const char **argv) {
   // cudaGraphicsUnmapResources() will complete before ensuing graphics calls
   // begin.
   cudaFree(d_v);
+
+  for (i = 0; i < n_vertices; i++) {
+    cout << "Particle " << (i + 1) << endl;
+    cout << "Position: " << v[i].position.x << " " << v[i].position.y << " "
+         << v[i].position.z << endl;
+    cout << "Speed: " << v[i].speed.x << " " << v[i].speed.y << " "
+         << v[i].speed.z << endl;
+  }
+
+  delete[] v;
 }
 
 void unregRes(cudaGraphicsResource **res) {
