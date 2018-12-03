@@ -36,6 +36,7 @@ __global__ void calculate_acceleration(Vertex *v, unsigned int n) {
 }
 
 __global__ void calculate_position(Vertex *v, unsigned int n, float delta) {
+  printf("running");
   unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
 
   if (i < n) {
@@ -46,6 +47,9 @@ __global__ void calculate_position(Vertex *v, unsigned int n, float delta) {
     v[i].position.x += v[i].speed.x * delta;
     v[i].position.y += v[i].speed.y * delta;
     v[i].position.z += v[i].speed.z * delta;
+
+    printf("#%i %f %f %f\n", i, v[i].position.x, v[i].position.y,
+           v[i].position.z);
 
     v[i].acceleration.x = 0.0f;
     v[i].acceleration.y = 0.0f;
