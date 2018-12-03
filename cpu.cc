@@ -15,6 +15,7 @@ unsigned int vbo; // VBO for storing positions.
 int n_vertices;
 float delta;
 float max_distance;
+int width, height;
 
 // handle for CUDA side:
 cudaGraphicsResource *resource;
@@ -69,13 +70,12 @@ void display(void) {
 
   glDisable(GL_DEPTH_TEST); // also disable the depth test so renders on top
 
-  glRasterPos2f(0, 0); // center of screen. (-1,0) is center left.
-  glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+  glRasterPos2f(-(float)width / 2.0, -(float)height / 2.0);
   char buf[300];
-  sprintf(buf, "Oh hello");
+  sprintf(buf, "Test");
   const char *p = buf;
   do
-    glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, *p);
+    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_10, *p);
   while (*(++p));
 
   glEnable(GL_DEPTH_TEST); // Turn depth testing back on
@@ -135,6 +135,8 @@ void keys(unsigned char key, int x, int y) {
 
 // Setting up the GL viewport and coordinate system
 void reshape(int w, int h) {
+  width = w;
+  height = h;
   glViewport(0, 0, w, h);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
