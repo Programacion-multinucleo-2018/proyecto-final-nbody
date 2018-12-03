@@ -67,7 +67,13 @@ int main(int argc, const char **argv) {
     exit(EXIT_FAILURE);
   }
 
+  cout << *filename << endl;
+
   ifstream input(*filename);
+
+  if (input) {
+    cout << "Worked." << endl;
+  }
 
   if (!input) {
     cout << "Problem opening file." << endl;
