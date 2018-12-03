@@ -71,9 +71,9 @@ void runCuda(cudaGraphicsResource **resource, Vertex *devPtr, int n_vertices,
       cudaGraphicsResourceGetMappedPointer((void **)&devPtr, &size, *resource));
 
   // launchKernel (devPtr, DIM, dt);
-  dim3 numBlocks((int)ceil((float)n_vertices / 32.0),
-                 (int)ceil((float)n_vertices / 32.0));
-  dim3 numThreads(32, 32);
+  dim3 numBlocks((int)ceil((float)n_vertices / 16.0),
+                 (int)ceil((float)n_vertices / 16.0));
+  dim3 numThreads(16, 16);
   calculate_acceleration<<<numBlocks, numThreads>>>(devPtr, n_vertices);
   numBlocks.y = 1;
   numThreads.y = 1;

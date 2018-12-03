@@ -156,9 +156,9 @@ int main(int argc, const char **argv) {
   cudaMemcpy(d_v, v, sizeof(Vertex) * n_vertices, cudaMemcpyHostToDevice);
 
   // launchKernel (devPtr, DIM, dt);
-  dim3 numBlocks((int)ceil((float)n_vertices / 16.0),
-                 (int)ceil((float)n_vertices / 16.0));
-  dim3 numThreads(16, 16);
+  dim3 numBlocks((int)ceil((float)n_vertices / 32.0),
+                 (int)ceil((float)n_vertices / 32.0));
+  dim3 numThreads(32, 32);
 
   auto start_gpu = chrono::high_resolution_clock::now();
 
@@ -168,8 +168,8 @@ int main(int argc, const char **argv) {
     numBlocks.y = 1;
     numThreads.y = 1;
     calculate_position_gpu<<<numBlocks, numThreads>>>(d_v, n_vertices, delta);
-    numBlocks.y = (int)ceil((float)n_vertices / 16.0);
-    numThreads.y = 16;
+    numBlocks.y = (int)ceil((float)n_vertices / 32.0);
+    numThreads.y = 32;
     i++;
   }
 
