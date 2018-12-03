@@ -62,6 +62,7 @@ void display(void) {
 }
 
 void idle(void) {
+  cout << "running idle" << endl;
   dt += 0.01f;
   runCuda(&resource, devPtr, n_vertices, delta);
   glutPostRedisplay();
