@@ -4,7 +4,6 @@
 using namespace std;
 
 // size of the window (1024x1024)
-#define DIM 512
 #define BUFFER_OFFSET(i) ((char *)NULL + (i))
 #define LOCATION_OFFSET BUFFER_OFFSET(0)
 #define COLOR_OFFSET BUFFER_OFFSET(16)
@@ -13,9 +12,11 @@ using namespace std;
 // intend to share between OpenGL and CUDA calculated data.
 // handle for OpenGL side:
 unsigned int vbo; // VBO for storing positions.
+int n_vertices;
+float delta;
 
 // handle for CUDA side:
-cudaGraphicsResource *resource1;
+cudaGraphicsResource *resource;
 
 // mouse controls
 int mouse_old_x, mouse_old_y;
@@ -51,7 +52,7 @@ void display(void) {
 
   glEnableClientState(GL_VERTEX_ARRAY);
   glEnableClientState(GL_COLOR_ARRAY);
-  glDrawArrays(GL_POINTS, 0, DIM * DIM);
+  glDrawArrays(GL_POINTS, 0, n_vertices);
   glDisableClientState(GL_COLOR_ARRAY);
   glDisableClientState(GL_VERTEX_ARRAY);
 
@@ -62,7 +63,7 @@ void display(void) {
 
 void idle(void) {
   dt += 0.01f;
-  runCuda(&resource1, devPtr, DIM, dt);
+  runCuda(&resource, devPtr, n_vertices, delta);
   glutPostRedisplay();
 }
 
@@ -99,7 +100,7 @@ void keys(unsigned char key, int x, int y) {
   case 27:
     // clean up OpenGL and CUDA
     glDeleteBuffers(1, &vbo);
-    // unregRes( &resource1 );
+    // unregRes( &resource );
     exit(0);
     break;
   }
@@ -126,8 +127,8 @@ void initGL() {
   cout << "Status: Using GLEW " << glewGetString(GLEW_VERSION) << endl;
 }
 
-void initCUDA(int ARGC, const char **ARGV) {
-  chooseDev(ARGC, ARGV);
+void initCUDA(int argc, const char **argv) {
+  chooseDev(argc, argv);
   // creating a vertex buffer object in OpenGL and storing the handle in our
   // global variable GLuint vbo
   glGenBuffers(1, &vbo);
@@ -135,50 +136,53 @@ void initCUDA(int ARGC, const char **ARGV) {
 
   // CARGAR DE UN ARCHIVO
 
-  Vertex *vert_data = new Vertex[DIM * DIM];
-  for (int i = 0; i < DIM * DIM; i++) {
-    float x = (float)(rand() % DIM);
-    float z = (float)(rand() % DIM);
-    int r = rand() % 2;
-    int s = 1;
-    if (r == 1)
-      s = -1;
-    vert_data[i].pos.x = (float)s * x / (float)DIM;
-    s = 1;
-    r = rand() % 2;
-    if (r == 1)
-      s = -1;
-    vert_data[i].pos.y = (float)s * z / (float)DIM;
-    vert_data[i].pos.z = 0.0f;
-    vert_data[i].pos.w = 1.0f;
-    s = 1;
-    r = rand() % 2;
-    if (r == 1)
-      s = -1;
-    vert_data[i].dir_speed.x = (float)s; // Direction in X
-    s = 1;
-    r = rand() % 2;
-    if (r == 1)
-      s = -1;
-    vert_data[i].dir_speed.y = (float)s; // Direction in Z
-    float speed = (float)(rand() % 100) + 1.0f;
-    speed /= 100.0f;
-    vert_data[i].dir_speed.z = speed; // Speed factor
-    vert_data[i].dir_speed.w = 0.0f;
+  char **filename;
 
-    float cr = (float)(rand() % (DIM - 10)) + 10.0f;
-    float cg = (float)(rand() % (DIM - 10)) + 10.0f;
-    float cb = (float)(rand() % (DIM - 10)) + 10.0f;
-    vert_data[i].color.x = cr / (float)DIM;
-    vert_data[i].color.y = cg / (float)DIM;
-    vert_data[i].color.z = cb / (float)DIM;
-    vert_data[i].color.w = 1.0f;
+  if (!getCmdLineArgumentString(argc, argv, "file=", filename)) {
+    cout << "Please specify an input file with the option --file." << endl;
+    exit(EXIT_FAILURE);
   }
-  glBufferData(GL_ARRAY_BUFFER, DIM * DIM * sizeof(Vertex), vert_data,
+
+  ifstream input(*filename);
+  input >> delta;
+  input >> n_vertices;
+
+  Vertex *v = new Vertex[n_vertices];
+
+  float mass, position_x, position_y, position_z, speed_x, speed_y, speed_z;
+  for (int i = 0; i < n_vertices; i++) {
+    input >> mass >> position_x >> position_y >> position_z >> speed_x >>
+        speed_y >> speed_z;
+
+    v[i].mass = mass;
+
+    v[i].position.x = position_x;
+    v[i].position.y = position_y;
+    v[i].position.z = position_z;
+    v[i].position.w = 1.0f;
+
+    v[i].speed.x = speed_x;
+    v[i].speed.y = speed_y;
+    v[i].speed.z = speed_z;
+
+    v[i].acceleration.x = 0.0f;
+    v[i].acceleration.y = 0.0f;
+    v[i].acceleration.z = 0.0f;
+
+    float cr = (float)(rand() % 502) + 10.0f;
+    float cg = (float)(rand() % 502) + 10.0f;
+    float cb = (float)(rand() % 502) + 10.0f;
+    v[i].color.x = cr / (float)512;
+    v[i].color.y = cg / (float)512;
+    v[i].color.z = cb / (float)512;
+    v[i].color.w = 1.0f;
+  }
+
+  glBufferData(GL_ARRAY_BUFFER, n_vertices * sizeof(Vertex), v,
                GL_DYNAMIC_DRAW);
-  delete[] vert_data;
-  regBuffer(&resource1, vbo);
-  runCuda(&resource1, devPtr, DIM, dt);
+  delete[] v;
+  regBuffer(&resource, vbo);
+  runCuda(&resource, devPtr, n_vertices, delta);
 }
 
 int main(int argc, const char **argv) {

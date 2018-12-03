@@ -2,6 +2,7 @@
 #ifndef __HELPER_INCLUDES_H__
 #define __HELPER_INCLUDES_H__
 
+#include <fstream>
 #include <iostream>
 #include <math.h>
 #include <stdio.h>
@@ -38,13 +39,13 @@
 #include <helper_cuda.h>    // helper functions for CUDA error check
 #include <helper_cuda_gl.h> // helper functions for CUDA/GL interop
 
-#define GRAVITATIONAL_CONSTANT 6.67408e-11
+#define G_CONSTANT 6.67408e-11
 
 typedef struct {
-  float3 position;
+  float4 position;
+  float4 color;
   float3 speed;
   float3 acceleration;
-  float3 force;
   float mass;
 } Vertex;
 
