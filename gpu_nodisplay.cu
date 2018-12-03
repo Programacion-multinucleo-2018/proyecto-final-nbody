@@ -48,7 +48,7 @@ __global__ void calculate_position(Vertex *v, unsigned int n, float delta) {
     v[i].acceleration.y = 0.0f;
     v[i].acceleration.z = 0.0f;
 
-    printf("#%i\nSpeed: %f %f %f\nPosition: %f %f %f\n", v[i].speed.x,
+    printf("#%i\nSpeed: %f %f %f\nPosition: %f %f %f\n", i, v[i].speed.x,
            v[i].speed.y, v[i].speed.z, v[i].position.x, v[i].position.y,
            v[i].position.z);
   }
