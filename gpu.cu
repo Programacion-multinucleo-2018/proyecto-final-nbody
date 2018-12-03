@@ -10,7 +10,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 __global__ void calculate_acceleration(Vertex *v, unsigned int n) {
-  printf("running calculate_acceleration");
+  printf("running calculate_acceleration\n");
   unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
   unsigned int j = blockIdx.y * blockDim.y + threadIdx.y;
 
