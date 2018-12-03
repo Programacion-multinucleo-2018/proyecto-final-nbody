@@ -60,7 +60,7 @@ void display(void) {
 
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-  glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_10, "v");
+  glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_10, 'c');
 
   glutSwapBuffers();
 }
