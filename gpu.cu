@@ -14,9 +14,6 @@ __global__ void calculate_acceleration(Vertex *v, unsigned int n) {
   unsigned int j = blockIdx.y * blockDim.y + threadIdx.y;
 
   if (i < n && j < n && i < j) {
-
-    printf("running calculate_acceleration\n");
-
     float distance = sqrt(pow(v[i].position.x - v[j].position.x, 2) +
                           pow(v[i].position.y - v[j].position.y, 2) +
                           pow(v[i].position.z - v[j].position.z, 2));
