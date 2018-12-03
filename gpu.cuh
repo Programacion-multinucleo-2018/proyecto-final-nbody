@@ -3,11 +3,6 @@
 
 #include "main.h"
 
-///////////////////////////////////////////////////////////////////////////////
-//! Simple kernel to modify vertex positions in sine wave pattern
-//! @param data  data in global memory
-///////////////////////////////////////////////////////////////////////////////
-
 void runCuda(cudaGraphicsResource **resource, Vertex *devPtr, int n_vertices,
              float delta, float max_distance, int *iteration);
 
