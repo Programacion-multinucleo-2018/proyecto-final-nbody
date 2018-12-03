@@ -34,7 +34,7 @@ debug: directory $(SOURCES) $(OUTDIR)$(OUTDEBUG)
 $(OUTDIR)$(OUTDEBUG) : $(OUTDIR) $(OBJECTS) $(OBJECTSCU)
 	$(CC) $(DEBUGF) $(INCLUDES) -o $@ $(OBJECTS) $(OBJECTSCU) $(LDFLAGS) 
 
-.cpp.o:
+.cc.o:
 	$(CC) $(CFLAGS) $(INCLUDES) $< -c $@
 
 .cu.o:
