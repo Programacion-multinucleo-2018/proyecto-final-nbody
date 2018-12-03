@@ -211,7 +211,7 @@ int main(int argc, const char **argv) {
   cout << "4" << endl;
   glutInitWindowPosition(100, 100);
   cout << "5" << endl;
-  glutCreateWindow("N-body simulation");
+  glutCreateWindow("test");
   cout << "6" << endl;
   glutReshapeFunc(reshape);
   cout << "7" << endl;
