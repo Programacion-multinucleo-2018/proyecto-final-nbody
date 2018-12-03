@@ -61,7 +61,7 @@ __global__ void calculate_position(Vertex *v, unsigned int n, float delta,
 void runCuda(cudaGraphicsResource **resource, Vertex *devPtr, int n_vertices,
              float delta, float max_distance, int *iteration) {
   printf("%i", *iteration);
-  *iteration++;
+  (*iteration)++;
   // Getting an actual address in device memory that can be passed to our
   // kernel. We achieve this by instructing the CUDA runtime to map the shared
   // resource and then by requesting a pointer to the mapped resource.
