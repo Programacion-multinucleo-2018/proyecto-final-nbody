@@ -75,8 +75,6 @@ void display(void) {
            << ", in days: " << ((float)iteration * delta / 86400);
   char buf[300];
   sprintf(buf, timemark.str().c_str());
-  printf("%s", buf);
-  fflush();
   int i = 0;
   while (buf[i] != '\0') {
     glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_10, buf[i]);
