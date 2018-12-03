@@ -136,7 +136,7 @@ void initCUDA(int argc, const char **argv) {
 
   // CARGAR DE UN ARCHIVO
 
-  char **filename;
+  char **filename = (char **)malloc(sizeof(char *));
 
   if (!getCmdLineArgumentString(argc, argv, "file=", filename)) {
     cout << "Please specify an input file with the option --file." << endl;
