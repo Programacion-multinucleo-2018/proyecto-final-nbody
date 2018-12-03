@@ -67,8 +67,6 @@ int main(int argc, const char **argv) {
     exit(EXIT_FAILURE);
   }
 
-  cout << *filename << endl;
-
   ifstream input;
   input.open(*filename);
 
@@ -80,16 +78,12 @@ int main(int argc, const char **argv) {
   input >> delta;
   input >> n_vertices;
 
-  cout << n_vertices << endl;
-
   Vertex *v = new Vertex[n_vertices];
 
   float mass, position_x, position_y, position_z, speed_x, speed_y, speed_z;
   for (int i = 0; i < n_vertices; i++) {
     input >> mass >> position_x >> position_y >> position_z >> speed_x >>
         speed_y >> speed_z;
-    cout << mass << position_x << position_y << position_z << speed_x << speed_y
-         << speed_z << endl;
 
     v[i].mass = mass;
 
