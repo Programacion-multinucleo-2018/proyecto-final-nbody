@@ -8,6 +8,9 @@
 //! @param data  data in global memory
 ///////////////////////////////////////////////////////////////////////////////
 
+void runCuda(cudaGraphicsResource **resource, Vertex *devPtr, int n_vertices,
+             float delta, float max_distance);
+
 void unregRes(cudaGraphicsResource **res);
 
 void chooseDev(int ARGC, const char **ARGV);
