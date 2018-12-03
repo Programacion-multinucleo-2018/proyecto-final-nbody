@@ -5,10 +5,10 @@
 #include <fstream>
 #include <iostream>
 #include <math.h>
+#include <sstream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <string>
 #include <time.h>
 
 #ifdef _WIN32
