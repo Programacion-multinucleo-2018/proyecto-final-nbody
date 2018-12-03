@@ -71,8 +71,8 @@ void display(void) {
 
   glRasterPos2f(-1.0, -1.0);
   ostringstream timemark;
-  timemark << "Time in seconds: " << (iteration * delta)
-           << ", in days: " << (iteration * delta / 86400);
+  timemark << "Time in seconds: " << ((float)iteration * delta)
+           << ", in days: " << ((float)iteration * delta / 86400);
   cout << timemark.str() << endl;
   const char *display_text = timemark.str().c_str();
   do {
