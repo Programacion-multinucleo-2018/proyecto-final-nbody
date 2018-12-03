@@ -58,7 +58,7 @@ int main(int argc, const char **argv) {
   float delta = 1.0f;
   Vertex *v = new Vertex[2];
 
-  v[0].mass = 5972000000000000000000000;
+  v[0].mass = 5.972e+24;
 
   v[0].position.x = 0.0f;
   v[0].position.y = 0.0f;
