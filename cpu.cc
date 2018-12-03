@@ -89,7 +89,7 @@ void display(void) {
 
 void idle(void) {
   dt += 0.01f;
-  runCuda(&resource, devPtr, n_vertices, delta, max_distance);
+  runCuda(&resource, devPtr, n_vertices, delta, max_distance, &iteration);
   glutPostRedisplay();
 }
 
@@ -236,7 +236,7 @@ void initCUDA(int argc, const char **argv) {
   regBuffer(&resource, vbo);
 
   iteration = 0;
-  runCuda(&resource, devPtr, n_vertices, delta, max_distance);
+  runCuda(&resource, devPtr, n_vertices, delta, max_distance, &iteration);
 }
 
 int main(int argc, const char **argv) {

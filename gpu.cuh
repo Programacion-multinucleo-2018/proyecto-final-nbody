@@ -9,7 +9,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 void runCuda(cudaGraphicsResource **resource, Vertex *devPtr, int n_vertices,
-             float delta, float max_distance);
+             float delta, float max_distance, int *iteration);
 
 void unregRes(cudaGraphicsResource **res);
 
