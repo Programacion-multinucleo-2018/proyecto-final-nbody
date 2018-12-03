@@ -199,20 +199,32 @@ void initCUDA(int argc, const char **argv) {
 
 int main(int argc, const char **argv) {
   srand((unsigned int)time(NULL));
+  cout << "1" << endl;
   // OpenGL configuration and GLUT calls  initialization
   // these need to be made before the other OpenGL
   // calls, else we get a seg fault
   glutInit(&argc, (char **)argv);
+  cout << "2" << endl;
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+  cout << "3" << endl;
   glutInitWindowSize(500, 500);
+  cout << "4" << endl;
   glutInitWindowPosition(100, 100);
+  cout << "5" << endl;
   glutCreateWindow("N-body simulation");
+  cout << "6" << endl;
   glutReshapeFunc(reshape);
+  cout << "7" << endl;
   glutKeyboardFunc(keys);
+  cout << "8" << endl;
   glutMouseFunc(mouse);
+  cout << "9" << endl;
   glutMotionFunc(motion);
+  cout << "10" << endl;
   initGL();
+  cout << "11" << endl;
   initCUDA(argc, argv);
+  cout << "12" << endl;
   glutDisplayFunc(display);
   glutIdleFunc(idle);
   glutMainLoop();
