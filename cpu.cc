@@ -12,10 +12,9 @@ using namespace std;
 // intend to share between OpenGL and CUDA calculated data.
 // handle for OpenGL side:
 unsigned int vbo; // VBO for storing positions.
-int n_vertices;
+int n_vertices, iteration;
 float delta;
 float max_distance;
-int width, height;
 
 // handle for CUDA side:
 cudaGraphicsResource *resource;
@@ -135,8 +134,6 @@ void keys(unsigned char key, int x, int y) {
 
 // Setting up the GL viewport and coordinate system
 void reshape(int w, int h) {
-  width = w;
-  height = h;
   glViewport(0, 0, w, h);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
@@ -237,6 +234,8 @@ void initCUDA(int argc, const char **argv) {
                GL_DYNAMIC_DRAW);
   delete[] v;
   regBuffer(&resource, vbo);
+
+  iteration = 0;
   runCuda(&resource, devPtr, n_vertices, delta, max_distance);
 }
 
