@@ -188,7 +188,7 @@ void initCUDA(int argc, const char **argv) {
   input.close();
 
   cout << "Simulation will run with " << n_vertices
-       << " particles pulled from input file." << endl;
+       << " particle(s) pulled from input file." << endl;
 
   glBufferData(GL_ARRAY_BUFFER, n_vertices * sizeof(Vertex), v,
                GL_DYNAMIC_DRAW);
@@ -211,7 +211,7 @@ int main(int argc, const char **argv) {
   cout << "4" << endl;
   glutInitWindowPosition(100, 100);
   cout << "5" << endl;
-  glutCreateWindow("test");
+  glutCreateWindow("N-body");
   cout << "6" << endl;
   glutReshapeFunc(reshape);
   cout << "7" << endl;
