@@ -76,7 +76,7 @@ int main(int argc, const char **argv) {
 
   v[1].mass = 1;
 
-  v[1].position.x = 6000000;
+  v[1].position.x = 6371000;
   v[1].position.y = 0.0f;
   v[1].position.z = 0.0f;
   v[1].position.w = 1.0f;
