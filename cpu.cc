@@ -60,7 +60,30 @@ void display(void) {
 
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-  glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_10, 'c');
+  glMatrixMode(GL_PROJECTION);
+  glPushMatrix();   // save
+  glLoadIdentity(); // and clear
+  glMatrixMode(GL_MODELVIEW);
+  glPushMatrix();
+  glLoadIdentity();
+
+  glDisable(GL_DEPTH_TEST); // also disable the depth test so renders on top
+
+  glRasterPos2f(0, 0); // center of screen. (-1,0) is center left.
+  glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+  char buf[300];
+  sprintf(buf, "Oh hello");
+  const char *p = buf;
+  do
+    glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, *p);
+  while (*(++p));
+
+  glEnable(GL_DEPTH_TEST); // Turn depth testing back on
+
+  glMatrixMode(GL_PROJECTION);
+  glPopMatrix(); // revert back to the matrix I had before.
+  glMatrixMode(GL_MODELVIEW);
+  glPopMatrix();
 
   glutSwapBuffers();
 }
