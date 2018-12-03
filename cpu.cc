@@ -1,5 +1,5 @@
-#include "../gpu/gpu.cuh"
-#include "../main.h"
+#include "gpu.cuh"
+#include "main.h"
 
 using namespace std;
 

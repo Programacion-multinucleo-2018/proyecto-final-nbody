@@ -1,8 +1,8 @@
 #ifndef __BASIC_INTEROP_H__
 #define __BASIC_INTEROP_H__
 
-#include "../main.h"
 #include "gpu.cuh"
+#include "main.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 //! Simple kernel to modify vertex positions in sine wave pattern
