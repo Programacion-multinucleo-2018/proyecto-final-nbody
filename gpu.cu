@@ -37,10 +37,11 @@ __global__ void calculate_acceleration(Vertex *v, unsigned int n) {
 }
 
 __global__ void calculate_position(Vertex *v, unsigned int n, float delta) {
-  printf("running");
   unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
 
   if (i < n) {
+    printf("#i %f\n", i, v[i].acceleration.x);
+
     v[i].speed.x += v[i].acceleration.x * delta;
     v[i].speed.y += v[i].acceleration.y * delta;
     v[i].speed.z += v[i].acceleration.z * delta;
@@ -48,9 +49,6 @@ __global__ void calculate_position(Vertex *v, unsigned int n, float delta) {
     v[i].position.x += v[i].speed.x * delta;
     v[i].position.y += v[i].speed.y * delta;
     v[i].position.z += v[i].speed.z * delta;
-
-    printf("#%i %f %f %f\n", i, v[i].position.x, v[i].position.y,
-           v[i].position.z);
 
     v[i].acceleration.x = 0.0f;
     v[i].acceleration.y = 0.0f;
@@ -60,7 +58,6 @@ __global__ void calculate_position(Vertex *v, unsigned int n, float delta) {
 
 void runCuda(cudaGraphicsResource **resource, Vertex *devPtr, int n_vertices,
              float delta) {
-  printf("running runCuda\n");
   // Getting an actual address in device memory that can be passed to our
   // kernel. We achieve this by instructing the CUDA runtime to map the shared
   // resource and then by requesting a pointer to the mapped resource.
