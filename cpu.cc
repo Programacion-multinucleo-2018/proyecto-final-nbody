@@ -14,6 +14,7 @@ using namespace std;
 unsigned int vbo; // VBO for storing positions.
 int n_vertices;
 float delta;
+float max_distance;
 
 // handle for CUDA side:
 cudaGraphicsResource *resource;
@@ -64,7 +65,7 @@ void display(void) {
 
 void idle(void) {
   dt += 0.01f;
-  runCuda(&resource, devPtr, n_vertices, delta);
+  runCuda(&resource, devPtr, n_vertices, delta, max_distance);
   glutPostRedisplay();
 }
 
@@ -157,7 +158,9 @@ void initCUDA(int argc, const char **argv) {
 
   Vertex *v = new Vertex[n_vertices];
 
-  float mass, position_x, position_y, position_z, speed_x, speed_y, speed_z;
+  float mass, position_x, position_y, position_z, speed_x, speed_y, speed_z,
+      distance;
+  max_distance = 0.0f;
   for (int i = 0; i < n_vertices; i++) {
     input >> mass >> position_x >> position_y >> position_z >> speed_x >>
         speed_y >> speed_z;
@@ -167,7 +170,12 @@ void initCUDA(int argc, const char **argv) {
     v[i].position.x = position_x;
     v[i].position.y = position_y;
     v[i].position.z = position_z;
-    v[i].position.w = 1.0f;
+
+    distance =
+        sqrt(pow(position_x, 2) + pow(position_y, 2) + pow(position_z, 2));
+    if (distance > max_distance) {
+      max_distance = distance;
+    }
 
     v[i].speed.x = speed_x;
     v[i].speed.y = speed_y;
@@ -188,6 +196,13 @@ void initCUDA(int argc, const char **argv) {
 
   input.close();
 
+  for (int i = 0; i < n_vertices; i++) {
+    v[i].gl_position.x = v[i].position.x / max_distance;
+    v[i].gl_position.y = v[i].position.y / max_distance;
+    v[i].gl_position.z = v[i].position.z / max_distance;
+    v[i].gl_position.w = 1.0f;
+  }
+
   cout << "Simulation will run with " << n_vertices
        << " particle(s) pulled from input file." << endl;
 
@@ -195,7 +210,7 @@ void initCUDA(int argc, const char **argv) {
                GL_DYNAMIC_DRAW);
   delete[] v;
   regBuffer(&resource, vbo);
-  runCuda(&resource, devPtr, n_vertices, delta);
+  runCuda(&resource, devPtr, n_vertices, delta, max_distance);
 }
 
 int main(int argc, const char **argv) {

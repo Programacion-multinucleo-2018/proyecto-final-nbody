@@ -38,7 +38,8 @@ __global__ void calculate_acceleration(Vertex *v, unsigned int n) {
   }
 }
 
-__global__ void calculate_position(Vertex *v, unsigned int n, float delta) {
+__global__ void calculate_position(Vertex *v, unsigned int n, float delta,
+                                   float max_distance) {
   unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
 
   if (i < n) {
@@ -53,6 +54,10 @@ __global__ void calculate_position(Vertex *v, unsigned int n, float delta) {
     printf("#%i acc: %f speed: %f pos: %f\n", i, v[i].acceleration.x,
            v[i].speed.x, v[i].position.x);
 
+    v[i].gl_position.x = v[i].position.x / max_distance;
+    v[i].gl_position.y = v[i].position.y / max_distance;
+    v[i].gl_position.z = v[i].position.z / max_distance;
+
     v[i].acceleration.x = 0.0f;
     v[i].acceleration.y = 0.0f;
     v[i].acceleration.z = 0.0f;
@@ -60,7 +65,7 @@ __global__ void calculate_position(Vertex *v, unsigned int n, float delta) {
 }
 
 void runCuda(cudaGraphicsResource **resource, Vertex *devPtr, int n_vertices,
-             float delta) {
+             float delta, float max_distance) {
   // Getting an actual address in device memory that can be passed to our
   // kernel. We achieve this by instructing the CUDA runtime to map the shared
   // resource and then by requesting a pointer to the mapped resource.
@@ -77,7 +82,8 @@ void runCuda(cudaGraphicsResource **resource, Vertex *devPtr, int n_vertices,
   calculate_acceleration<<<numBlocks, numThreads>>>(devPtr, n_vertices);
   numBlocks.y = 1;
   numThreads.y = 1;
-  calculate_position<<<numBlocks, numThreads>>>(devPtr, n_vertices, delta);
+  calculate_position<<<numBlocks, numThreads>>>(devPtr, n_vertices, delta,
+                                                max_distance);
   cudaDeviceSynchronize();
 
   // unmapping our shared resource. This call is important to make prior to

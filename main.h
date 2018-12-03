@@ -42,8 +42,9 @@
 #define G_CONSTANT 6.67408e-11
 
 typedef struct {
-  float4 position;
+  float4 gl_position;
   float4 color;
+  float3 position;
   float3 speed;
   float3 acceleration;
   float mass;

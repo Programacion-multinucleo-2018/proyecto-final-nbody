@@ -7,11 +7,6 @@
 //! Simple kernel to modify vertex positions in sine wave pattern
 //! @param data  data in global memory
 ///////////////////////////////////////////////////////////////////////////////
-__global__ void kernel(Vertex *v, unsigned int width, unsigned int height,
-                       float time);
-
-void runCuda(cudaGraphicsResource **resource, Vertex *devPtr, int dim,
-             float dt);
 
 void unregRes(cudaGraphicsResource **res);
 
