@@ -69,11 +69,8 @@ int main(int argc, const char **argv) {
 
   cout << *filename << endl;
 
-  ifstream input(*filename);
-
-  if (input) {
-    cout << "Worked." << endl;
-  }
+  ifstream input;
+  input.open(*filename);
 
   if (!input) {
     cout << "Problem opening file." << endl;
@@ -117,6 +114,8 @@ int main(int argc, const char **argv) {
     v[i].color.z = cb / (float)512;
     v[i].color.w = 1.0f;
   }
+
+  input.close();
 
   Vertex *d_v;
   cudaMalloc(&d_v, sizeof(Vertex) * n_vertices);

@@ -143,7 +143,14 @@ void initCUDA(int argc, const char **argv) {
     exit(EXIT_FAILURE);
   }
 
-  ifstream input(*filename);
+  ifstream input;
+  input.open(*filename);
+
+  if (!input) {
+    cout << "Problem opening file." << endl;
+    exit(EXIT_FAILURE);
+  }
+
   input >> delta;
   input >> n_vertices;
 
@@ -179,6 +186,8 @@ void initCUDA(int argc, const char **argv) {
     v[i].color.z = cb / (float)512;
     v[i].color.w = 1.0f;
   }
+
+  input.close();
 
   glBufferData(GL_ARRAY_BUFFER, n_vertices * sizeof(Vertex), v,
                GL_DYNAMIC_DRAW);
