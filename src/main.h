@@ -46,6 +46,6 @@ typedef struct {
   float3 acceleration;
   float3 force;
   float mass;
-} Particle;
+} Vertex;
 
 #endif
