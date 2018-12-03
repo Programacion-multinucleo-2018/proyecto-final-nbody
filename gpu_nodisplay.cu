@@ -107,6 +107,12 @@ int main(int argc, const char **argv) {
   numBlocks.y = 1;
   numThreads.y = 1;
   calculate_position<<<numBlocks, numThreads>>>(d_v, n_vertices, delta);
+  numBlocks.y = (int)ceil((float)n_vertices / 16.0;
+  numThreads.y = 16;
+  calculate_acceleration<<<numBlocks, numThreads>>>(d_v, n_vertices);
+  numBlocks.y = 1;
+  numThreads.y = 1;
+  calculate_position<<<numBlocks, numThreads>>>(d_v, n_vertices, delta);
 
   // unmapping our shared resource. This call is important to make prior to
   // performing rendering tasks because it provides synchronization between the
