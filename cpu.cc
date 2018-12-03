@@ -70,8 +70,8 @@ void display(void) {
   glDisable(GL_DEPTH_TEST); // also disable the depth test so renders on top
 
   glRasterPos2f(-1.0, -1.0);
-  string timemark = "Time in seconds: " + iteration * delta +
-                    ", in days: " + iteration * delta / 86400;
+  string timemark = "Time in seconds: " + (iteration * delta) +
+                    ", in days: " + (iteration * delta / 86400);
   const char *display_text = timemark.c_str();
   do {
     glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_10, *display_text);
