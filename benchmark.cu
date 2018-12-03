@@ -1,5 +1,7 @@
 #include "main.h"
 
+using namespace std;
+
 void calculate_acceleration_cpu(Vertex *v, unsigned int n) {
   for (int i = 0; i < n; i++) {
     for (int j = i + 1; j < n; j++) {
