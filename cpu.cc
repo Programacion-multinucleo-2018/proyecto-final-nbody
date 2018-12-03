@@ -70,6 +70,7 @@ void display(void) {
   glDisable(GL_DEPTH_TEST); // also disable the depth test so renders on top
 
   glRasterPos2f(-1.0, -1.0);
+  glColor4f(255.0f, 255.0f, 255.0f, 1.0f);
   ostringstream timemark;
   timemark << "Time in seconds: " << ((float)iteration * delta)
            << ", in days: " << ((float)iteration * delta / 86400);
@@ -77,7 +78,7 @@ void display(void) {
   sprintf(buf, timemark.str().c_str());
   int i = 0;
   while (buf[i] != '\0') {
-    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_10, buf[i]);
+    glutBitmapCharacter(GLUT_BITMAP_HELVETICA_12, buf[i]);
     i++;
   };
 
