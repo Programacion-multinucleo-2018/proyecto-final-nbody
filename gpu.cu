@@ -10,11 +10,13 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 __global__ void calculate_acceleration(Vertex *v, unsigned int n) {
-  printf("running calculate_acceleration\n");
   unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
   unsigned int j = blockIdx.y * blockDim.y + threadIdx.y;
 
   if (i < n && j < n && i < j) {
+
+    printf("running calculate_acceleration\n");
+
     float distance = sqrt(pow(v[i].position.x - v[j].position.x, 2) +
                           pow(v[i].position.y - v[j].position.y, 2) +
                           pow(v[i].position.z - v[j].position.z, 2));
@@ -40,8 +42,6 @@ __global__ void calculate_position(Vertex *v, unsigned int n, float delta) {
   unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
 
   if (i < n) {
-    printf("#i %f\n", i, v[i].acceleration.x);
-
     v[i].speed.x += v[i].acceleration.x * delta;
     v[i].speed.y += v[i].acceleration.y * delta;
     v[i].speed.z += v[i].acceleration.z * delta;
@@ -49,6 +49,8 @@ __global__ void calculate_position(Vertex *v, unsigned int n, float delta) {
     v[i].position.x += v[i].speed.x * delta;
     v[i].position.y += v[i].speed.y * delta;
     v[i].position.z += v[i].speed.z * delta;
+
+    printf("#i %f\n", i, v[i].acceleration.x);
 
     v[i].acceleration.x = 0.0f;
     v[i].acceleration.y = 0.0f;
