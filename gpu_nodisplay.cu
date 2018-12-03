@@ -54,9 +54,11 @@ __global__ void calculate_position(Vertex *v, unsigned int n, float delta) {
 }
 
 int main(int argc, const char **argv) {
+  int n_vertices = 2;
+  float delta = 1.0f;
   Vertex *v = new Vertex[2];
 
-  v[0].mass = 1;
+  v[0].mass = 5972000000000000000000000;
 
   v[0].position.x = 0.0f;
   v[0].position.y = 0.0f;
@@ -73,7 +75,7 @@ int main(int argc, const char **argv) {
 
   v[1].mass = 1;
 
-  v[1].position.x = 1.0f;
+  v[1].position.x = 6000000;
   v[1].position.y = 0.0f;
   v[1].position.z = 0.0f;
   v[1].position.w = 1.0f;
@@ -94,10 +96,10 @@ int main(int argc, const char **argv) {
   dim3 numBlocks((int)ceil((float)n_vertices / 16.0),
                  (int)ceil((float)n_vertices / 16.0));
   dim3 numThreads(16, 16);
-  calculate_acceleration<<<numBlocks, numThreads>>>(devPtr, n_vertices);
+  calculate_acceleration<<<numBlocks, numThreads>>>(d_v, n_vertices);
   numBlocks.y = 1;
   numThreads.y = 1;
-  calculate_position<<<numBlocks, numThreads>>>(devPtr, n_vertices, delta);
+  calculate_position<<<numBlocks, numThreads>>>(d_v, n_vertices, delta);
 
   // unmapping our shared resource. This call is important to make prior to
   // performing rendering tasks because it provides synchronization between the
