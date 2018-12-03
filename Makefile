@@ -6,8 +6,8 @@ INCLUDES = -I $(CUDA_HOME)/include/ -I ./common/
 LDFLAGS = -lGL -lglut -lGLU -lGLEW
 DEBUGF = $(CFLAGS) -ggdb
 
-SOURCES = src/cpu/cpu.cc
-SOURCES_CU = src/gpu/gpu.cu
+SOURCES = cpu.cc
+SOURCES_CU = gpu.cu
 
 OBJECTS=$(SOURCES:.cc=.o)
 OBJECTSCU=$(SOURCES_CU:.cu=.o)
