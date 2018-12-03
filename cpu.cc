@@ -143,10 +143,6 @@ void initCUDA(int argc, const char **argv) {
     exit(EXIT_FAILURE);
   }
 
-  cout << "test" << endl;
-
-  cout << *filename << endl;
-
   ifstream input(*filename);
   input >> delta;
   input >> n_vertices;
@@ -157,6 +153,8 @@ void initCUDA(int argc, const char **argv) {
   for (int i = 0; i < n_vertices; i++) {
     input >> mass >> position_x >> position_y >> position_z >> speed_x >>
         speed_y >> speed_z;
+    cout << mass << position_x << position_y << position_z << speed_x << speed_y
+         << speed_z << endl;
 
     v[i].mass = mass;
 
