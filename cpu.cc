@@ -52,6 +52,7 @@ void display(void) {
 
   glEnableClientState(GL_VERTEX_ARRAY);
   glEnableClientState(GL_COLOR_ARRAY);
+  glPointSize(3.0);
   glDrawArrays(GL_POINTS, 0, n_vertices);
   glDisableClientState(GL_COLOR_ARRAY);
   glDisableClientState(GL_VERTEX_ARRAY);
