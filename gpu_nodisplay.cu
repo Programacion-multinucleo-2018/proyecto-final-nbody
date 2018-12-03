@@ -17,6 +17,8 @@ __global__ void calculate_acceleration(Vertex *v, unsigned int n) {
 
     float magnitude = G_CONSTANT / pow(distance, 3);
 
+    printf("mag %f", magnitude);
+
     float3 vector;
     vector.x = magnitude * (v[i].position.x - v[j].position.x);
     vector.y = magnitude * (v[i].position.y - v[j].position.y);
@@ -27,6 +29,9 @@ __global__ void calculate_acceleration(Vertex *v, unsigned int n) {
     atomicAdd(&(v[i].acceleration.z), -vector.z * v[j].mass);
 
     atomicAdd(&(v[j].acceleration.x), vector.x * v[i].mass);
+
+    printf("add %f", vector.x * v[i].mass);
+
     atomicAdd(&(v[j].acceleration.y), vector.y * v[i].mass);
     atomicAdd(&(v[j].acceleration.z), vector.z * v[i].mass);
   }
