@@ -73,11 +73,13 @@ void display(void) {
   ostringstream timemark;
   timemark << "Time in seconds: " << ((float)iteration * delta)
            << ", in days: " << ((float)iteration * delta / 86400);
-  const char *display_text = timemark.str().c_str();
-  printf("%s", display_text);
+  char buf[300];
+  sprintf(buf, timemark.str().c_str());
+  printf("%s", buf);
+  fflush();
   do {
-    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_10, *display_text);
-  } while (*(++display_text));
+    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_10, buf);
+  } while (*(++buf));
 
   glEnable(GL_DEPTH_TEST); // Turn depth testing back on
 
