@@ -55,43 +55,56 @@ __global__ void calculate_position(Vertex *v, unsigned int n, float delta) {
 }
 
 int main(int argc, const char **argv) {
-  int n_vertices = 2;
-  float delta = 1.0f;
-  Vertex *v = new Vertex[2];
+  int n_vertices;
+  float delta;
 
-  v[0].mass = 5.972e+24;
+  char **filename = (char **)malloc(sizeof(char *));
 
-  v[0].position.x = 0.0f;
-  v[0].position.y = 0.0f;
-  v[0].position.z = 0.0f;
-  v[0].position.w = 1.0f;
+  if (!getCmdLineArgumentString(argc, argv, "file=", filename)) {
+    cout << "Please specify an input file with the option --file." << endl;
+    exit(EXIT_FAILURE);
+  }
 
-  v[0].speed.x = 0.0f;
-  v[0].speed.y = 0.0f;
-  v[0].speed.z = 0.0f;
+  ifstream input(*filename);
+  input >> delta;
+  input >> n_vertices;
 
-  v[0].acceleration.x = 0.0f;
-  v[0].acceleration.y = 0.0f;
-  v[0].acceleration.z = 0.0f;
+  Vertex *v = new Vertex[n_vertices];
 
-  v[1].mass = 1;
+  float mass, position_x, position_y, position_z, speed_x, speed_y, speed_z;
+  for (int i = 0; i < n_vertices; i++) {
+    input >> mass >> position_x >> position_y >> position_z >> speed_x >>
+        speed_y >> speed_z;
+    cout << mass << position_x << position_y << position_z << speed_x << speed_y
+         << speed_z << endl;
 
-  v[1].position.x = 6371000;
-  v[1].position.y = 0.0f;
-  v[1].position.z = 0.0f;
-  v[1].position.w = 1.0f;
+    v[i].mass = mass;
 
-  v[1].speed.x = 0.0f;
-  v[1].speed.y = 0.0f;
-  v[1].speed.z = 0.0f;
+    v[i].position.x = position_x;
+    v[i].position.y = position_y;
+    v[i].position.z = position_z;
+    v[i].position.w = 1.0f;
 
-  v[1].acceleration.x = 0.0f;
-  v[1].acceleration.y = 0.0f;
-  v[1].acceleration.z = 0.0f;
+    v[i].speed.x = speed_x;
+    v[i].speed.y = speed_y;
+    v[i].speed.z = speed_z;
+
+    v[i].acceleration.x = 0.0f;
+    v[i].acceleration.y = 0.0f;
+    v[i].acceleration.z = 0.0f;
+
+    float cr = (float)(rand() % 502) + 10.0f;
+    float cg = (float)(rand() % 502) + 10.0f;
+    float cb = (float)(rand() % 502) + 10.0f;
+    v[i].color.x = cr / (float)512;
+    v[i].color.y = cg / (float)512;
+    v[i].color.z = cb / (float)512;
+    v[i].color.w = 1.0f;
+  }
 
   Vertex *d_v;
-  cudaMalloc(&d_v, sizeof(Vertex) * 2);
-  cudaMemcpy(d_v, v, sizeof(Vertex) * 2, cudaMemcpyHostToDevice);
+  cudaMalloc(&d_v, sizeof(Vertex) * n_vertices);
+  cudaMemcpy(d_v, v, sizeof(Vertex) * n_vertices, cudaMemcpyHostToDevice);
 
   // launchKernel (devPtr, DIM, dt);
   dim3 numBlocks((int)ceil((float)n_vertices / 16.0),
