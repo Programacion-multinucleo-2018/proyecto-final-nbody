@@ -77,9 +77,11 @@ void display(void) {
   sprintf(buf, timemark.str().c_str());
   printf("%s", buf);
   fflush();
-  do {
-    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_10, *buf);
-  } while (*(++buf));
+  int i = 0;
+  while (buf[i] != '\0') {
+    glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_10, buf[i]);
+    i++;
+  };
 
   glEnable(GL_DEPTH_TEST); // Turn depth testing back on
 
