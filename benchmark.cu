@@ -45,10 +45,20 @@ void calculate_position_cpu(Vertex *v, unsigned int n, float delta) {
 }
 
 __global__ void calculate_acceleration_gpu(Vertex *v, unsigned int n) {
-  unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
-  unsigned int j = blockIdx.y * blockDim.y + threadIdx.y;
+  unsigned int i = blockIdx.x;
+  unsigned int j = threadIdx.x;
 
-  if (i < n && j < n && i < j) {
+  __shared__ float3 sub;
+
+  if (j == 0) {
+    sub.x = 0.0f;
+    sub.y = 0.0f;
+    sub.z = 0.0f;
+  }
+
+  __syncthreads();
+
+  if (i < n && j < n) {
     float distance = sqrt(pow(v[i].position.x - v[j].position.x, 2) +
                           pow(v[i].position.y - v[j].position.y, 2) +
                           pow(v[i].position.z - v[j].position.z, 2));
@@ -60,13 +70,17 @@ __global__ void calculate_acceleration_gpu(Vertex *v, unsigned int n) {
     vector.y = magnitude * (v[i].position.y - v[j].position.y);
     vector.z = magnitude * (v[i].position.z - v[j].position.z);
 
-    atomicAdd(&(v[i].acceleration.x), -vector.x * v[j].mass);
-    atomicAdd(&(v[i].acceleration.y), -vector.y * v[j].mass);
-    atomicAdd(&(v[i].acceleration.z), -vector.z * v[j].mass);
+    atomicAdd(&(sub.x), -vector.x * v[j].mass);
+    atomicAdd(&(sub.y), -vector.y * v[j].mass);
+    atomicAdd(&(sub.z), -vector.z * v[j].mass);
+  }
 
-    atomicAdd(&(v[j].acceleration.x), vector.x * v[i].mass);
-    atomicAdd(&(v[j].acceleration.y), vector.y * v[i].mass);
-    atomicAdd(&(v[j].acceleration.z), vector.z * v[i].mass);
+  __syncthreads();
+
+  if (j == 0) {
+    atomicAdd(&(v[i].acceleration.x), sub.x);
+    atomicAdd(&(v[i].acceleration.y), sub.y);
+    atomicAdd(&(v[i].acceleration.z), sub.z);
   }
 }
 
