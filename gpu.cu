@@ -10,10 +10,20 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 __global__ void calculate_acceleration(Vertex *v, unsigned int n) {
-  unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
-  unsigned int j = blockIdx.y * blockDim.y + threadIdx.y;
+  unsigned int i = blockIdx.x;
+  unsigned int j = threadIdx.x;
 
-  if (i < n && j < n && i < j) {
+  __shared__ float3 sub;
+
+  if (j == 0) {
+    sub.x = 0.0f;
+    sub.y = 0.0f;
+    sub.z = 0.0f;
+  }
+
+  __syncthreads();
+
+  if (i < n && j < n && i != j) {
     float distance = sqrt(pow(v[i].position.x - v[j].position.x, 2) +
                           pow(v[i].position.y - v[j].position.y, 2) +
                           pow(v[i].position.z - v[j].position.z, 2));
@@ -25,13 +35,17 @@ __global__ void calculate_acceleration(Vertex *v, unsigned int n) {
     vector.y = magnitude * (v[i].position.y - v[j].position.y);
     vector.z = magnitude * (v[i].position.z - v[j].position.z);
 
-    atomicAdd(&(v[i].acceleration.x), -vector.x * v[j].mass);
-    atomicAdd(&(v[i].acceleration.y), -vector.y * v[j].mass);
-    atomicAdd(&(v[i].acceleration.z), -vector.z * v[j].mass);
+    atomicAdd(&(sub.x), -vector.x * v[j].mass);
+    atomicAdd(&(sub.y), -vector.y * v[j].mass);
+    atomicAdd(&(sub.z), -vector.z * v[j].mass);
+  }
 
-    atomicAdd(&(v[j].acceleration.x), vector.x * v[i].mass);
-    atomicAdd(&(v[j].acceleration.y), vector.y * v[i].mass);
-    atomicAdd(&(v[j].acceleration.z), vector.z * v[i].mass);
+  __syncthreads();
+
+  if (j == 0) {
+    atomicAdd(&(v[i].acceleration.x), sub.x);
+    atomicAdd(&(v[i].acceleration.y), sub.y);
+    atomicAdd(&(v[i].acceleration.z), sub.z);
   }
 }
 
@@ -61,32 +75,25 @@ __global__ void calculate_position(Vertex *v, unsigned int n, float delta,
 void runCuda(cudaGraphicsResource **resource, Vertex *devPtr, int n_vertices,
              float delta, float max_distance, int *iteration) {
   (*iteration)++;
-  // Getting an actual address in device memory that can be passed to our
-  // kernel. We achieve this by instructing the CUDA runtime to map the shared
-  // resource and then by requesting a pointer to the mapped resource.
+
   checkCudaErrors(cudaGraphicsMapResources(1, resource, NULL));
-  // devPtr is our device memory
+
   size_t size;
   checkCudaErrors(
       cudaGraphicsResourceGetMappedPointer((void **)&devPtr, &size, *resource));
 
   // launchKernel (devPtr, DIM, dt);
-  dim3 numBlocks((int)ceil((float)n_vertices / 16.0),
-                 (int)ceil((float)n_vertices / 16.0));
-  dim3 numThreads(16, 16);
-  calculate_acceleration<<<numBlocks, numThreads>>>(devPtr, n_vertices);
-  numBlocks.y = 1;
-  numThreads.y = 1;
-  calculate_position<<<numBlocks, numThreads>>>(devPtr, n_vertices, delta,
-                                                max_distance);
+  dim3 num_blocks_acceleration(n_vertices);
+  dim3 num_threads_acceleration(n_vertices);
+  calculate_acceleration<<<num_blocks_acceleration, num_threads_acceleration>>>(
+      devPtr, n_vertices);
+
+  dim3 num_blocks_position(n_vertices);
+  dim3 num_threads_position(n_vertices);
+  calculate_position<<<num_blocks_position, num_threads_position>>>(
+      devPtr, n_vertices, delta, max_distance);
   cudaDeviceSynchronize();
 
-  // unmapping our shared resource. This call is important to make prior to
-  // performing rendering tasks because it provides synchronization between the
-  // CUDA and graphics portions of the application. Specifically, it implies
-  // that all CUDA operations performed prior to the call to
-  // cudaGraphicsUnmapResources() will complete before ensuing graphics calls
-  // begin.
   checkCudaErrors(cudaGraphicsUnmapResources(1, resource, NULL));
 }
 

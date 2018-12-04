@@ -58,7 +58,7 @@ __global__ void calculate_acceleration_gpu(Vertex *v, unsigned int n) {
 
   __syncthreads();
 
-  if (i < n && j < n) {
+  if (i < n && j < n && i != j) {
     float distance = sqrt(pow(v[i].position.x - v[j].position.x, 2) +
                           pow(v[i].position.y - v[j].position.y, 2) +
                           pow(v[i].position.z - v[j].position.z, 2));
@@ -170,20 +170,20 @@ int main(int argc, const char **argv) {
   cudaMemcpy(d_v, v, sizeof(Vertex) * n_vertices, cudaMemcpyHostToDevice);
 
   // launchKernel (devPtr, DIM, dt);
-  dim3 numBlocks((int)ceil((float)n_vertices / 32.0),
-                 (int)ceil((float)n_vertices / 32.0));
-  dim3 numThreads(32, 32);
-
   auto start_gpu = chrono::high_resolution_clock::now();
 
   int i = 0;
   while (i < iterations) {
-    calculate_acceleration_gpu<<<numBlocks, numThreads>>>(d_v, n_vertices);
-    numBlocks.y = 1;
-    numThreads.y = 1;
-    calculate_position_gpu<<<numBlocks, numThreads>>>(d_v, n_vertices, delta);
-    numBlocks.y = (int)ceil((float)n_vertices / 32.0);
-    numThreads.y = 32;
+    dim3 num_blocks_acceleration(n_vertices);
+    dim3 num_threads_acceleration(n_vertices);
+    calculate_acceleration_gpu<<<num_blocks_acceleration,
+                                 num_threads_acceleration>>>(d_v, n_vertices);
+
+    dim3 num_blocks_position(n_vertices);
+    dim3 num_threads_position(n_vertices);
+    calculate_position_gpu<<<num_blocks_position, num_threads_position>>>(
+        d_v, n_vertices, delta);
+
     i++;
   }
 
