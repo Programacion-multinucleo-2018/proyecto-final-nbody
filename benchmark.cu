@@ -78,9 +78,9 @@ __global__ void calculate_acceleration_gpu(Vertex *v, unsigned int n) {
   __syncthreads();
 
   if (j == 0) {
-    atomicAdd(&(v[i].acceleration.x), sub.x);
-    atomicAdd(&(v[i].acceleration.y), sub.y);
-    atomicAdd(&(v[i].acceleration.z), sub.z);
+    v[i].acceleration.x = sub.x;
+    v[i].acceleration.y = sub.y;
+    v[i].acceleration.z = sub.z;
   }
 }
 
